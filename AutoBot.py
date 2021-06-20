@@ -1,23 +1,28 @@
 import sys
 # insert at 1, 0 is the script path (or '' in REPL)
-sys.path.insert(1, '/home/pi/Rover/servo_control')
-sys.path.insert(1, '/home/pi/Rover/ultrasonic')
+sys.path.insert(1, '/home/pi/AutoBot/servo_control')
+sys.path.insert(1, '/home/pi/AutoBot/ultrasonic')
+sys.path.insert(1, '/home/pi/AutoBot/dc_motor')
 
 from servo_ctrl1_class import Servo
 from ultrasonic_class import UltraSonic_Sensor
-
-
+from dc_motor_class import DC_Motor
 
 class AutoBot:
     servo_object=""
     ultrasonic_sensor_object = ""
-    dc_motor1_object = ""
-    dc_motor2_object = ""
+    dc_motor_left_object = ""
+    dc_motor_right_object = ""
     
-    def __init__(self,servo_input_pin,T_pin,E_pin):
+    def __init__(self,servo_input_pin,T_pin,E_pin,Dc_left_1_pin,Dc_left_2_pin,Dc_left_enable_pin,Dc_right_1_pin,Dc_right_2_pin,Dc_right_enable_pin):
         print("Constructor called")
         self.servo_object = Servo(servo_input_pin)
-        self.ultrasonic_sensor_object = UltraSonic_Sensor(T_pin,E_pin)
+        self.ultrasonic_sensor_object = UltraSonic_Sensor(T_pin,E_pin)        
+        ####Dc Motor Left Initalization
+        self.dc_motor_left_object = DC_Motor(Dc_left_1_pin,Dc_left_2_pin,Dc_left_enable_pin)        
+        ####Dc Motor Right Initalization
+        self.dc_motor_right_object = DC_Motor(Dc_right_1_pin,Dc_right_2_pin,Dc_right_enable_pin)       
+        
 
     def __del__(self):
         print("Distructor called")
@@ -96,10 +101,24 @@ class AutoBot:
         
 if __name__ == "__main__":
     print("Starting AutoBot")
+    ###Pin Number Servo 
     servo_pin = 8
-    T_pin = 37
-    E_pin = 38
-    bot = AutoBot(servo_pin,T_pin,E_pin)
+    
+    ###Pin Number Ultrasonic Sensor
+    T_pin = 31
+    E_pin = 32
+    
+    ###Pin Nuber Dc Left
+    Dc_left_1_pin = 33
+    Dc_left_2_pin = 35
+    Dc_left_enable_pin = 37
+    
+    ###Pin Number Dc Right
+    Dc_right_1_pin = 36
+    Dc_right_2_pin = 38
+    Dc_right_enable_pin = 40   
+    
+    bot = AutoBot(servo_pin,T_pin,E_pin,Dc_left_1_pin,Dc_left_2_pin,Dc_left_enable_pin,Dc_right_1_pin,Dc_right_2_pin,Dc_right_enable_pin)
     bot.start()
     bot.manual()
     bot.stop()
