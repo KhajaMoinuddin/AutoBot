@@ -1,4 +1,5 @@
 import sys
+import time
 # insert at 1, 0 is the script path (or '' in REPL)
 sys.path.insert(1, '/home/pi/AutoBot/servo_control')
 sys.path.insert(1, '/home/pi/AutoBot/ultrasonic')
@@ -78,10 +79,7 @@ class AutoBot:
                                     print("DC Motor Turn 180 Degree ")                                        
                         
         except KeyboardInterrupt:
-             print("Ending Autonomus Mode")
-        
-        
-        
+             print("Ending Autonomus Mode")       
         self.servo_object.turn_back_to_zero_degree()
 	#try:
             #while(1):
@@ -89,15 +87,62 @@ class AutoBot:
     def manual(self):
         print("Manual Mode")
         
+        
     def start(self):
         print("Starting with Automatic mode, By Default")
-        self.automatic()
+        #self.automatic()
+        #self.manual()
+        self.forward_1_second()
         
     def stop(self):
         print("Stopping Autobot")
         self.servo_object.turn_back_to_zero_degree()
         
+    def steer_45_degree_right(self):
+        seconds = 1
+        ##We should turn at a slow speed
+        self.dc_motor_right_object.speed_low()
+        self.dc_motor_right_object.forward(seconds)        
+        
+    def steer_0_degree_right(self):
+        seconds = 2
+        self.dc_motor_right_object.speed_low()
+        self.dc_motor_right_object.forward(seconds)
+    
+    def steer_135_degree_left(self):
+        seconds = 1
+        self.dc_motor_left_object.speed_low()
+        self.dc_motor_left_object.forward(seconds)
+        
+    def steer_180_degree_left(self):
+        seconds = 2
+        self.dc_motor_left_object.speed_low()
+        self.dc_motor_left_object.forward(seconds)
+    
+    def forward_1_second(self):
+        print("Forward one second")
+        #self.dc_motor_left_object.speed_low()
+        #sef.dc_motor_right_object.speed_low()        
+        self.dc_motor_left_object.set_forward_pin()
+        self.dc_motor_right_object.set_forward_pin()        
+        self.dc_motor_left_object.set_pin_enable()
+        self.dc_motor_right_object.set_pin_enable()
+        time.sleep(1)        
+        self.dc_motor_left_object.set_pin_disable()
+        self.dc_motor_right_object.set_pin_disable()
+        
 
+        
+    def reverse_1_second(self):
+        #self.dc_motor_left_object.speed_low()
+        #sef.dc_motor_right_object.speed_low()        
+        self.dc_motor_left_object.set_reverse_pin()
+        self.dc_motor_right_object.set_reverse_pin()        
+        self.dc_motor_left_object.set_pin_enable()
+        self.dc_motor_right_object.set_pin_enable()
+        time.sleep(1)        
+        self.dc_motor_left_object.set_pin_disable()
+        self.dc_motor_right_object.set_pin_disable()    
         
 if __name__ == "__main__":
     print("Starting AutoBot")
@@ -120,5 +165,5 @@ if __name__ == "__main__":
     
     bot = AutoBot(servo_pin,T_pin,E_pin,Dc_left_1_pin,Dc_left_2_pin,Dc_left_enable_pin,Dc_right_1_pin,Dc_right_2_pin,Dc_right_enable_pin)
     bot.start()
-    bot.manual()
-    bot.stop()
+    #bot.manual()
+    #bot.stop()
