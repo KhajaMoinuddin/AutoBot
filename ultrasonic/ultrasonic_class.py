@@ -40,11 +40,14 @@ class UltraSonic_Sensor:
               # i=0
            # time.sleep(2)
 
-        except KeyboardInterrupt:
-             GPIO.cleanup()
+        except KeyboardInterrupt:            
+                GPIO.cleanup()
     
     def __del__(self):
-         GPIO.cleanup()
+        try:
+            GPIO.cleanup()
+        except:
+            pass
  
 if __name__=='__main__':
     TRIG = 38

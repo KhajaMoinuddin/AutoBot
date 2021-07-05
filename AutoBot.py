@@ -93,16 +93,28 @@ class AutoBot:
         #self.automatic()
         #self.manual()
         self.forward_1_second()
+        self.reverse_1_second()
+        self.steer_45_degree_right()
         
     def stop(self):
         print("Stopping Autobot")
         self.servo_object.turn_back_to_zero_degree()
         
     def steer_45_degree_right(self):
-        seconds = 1
-        ##We should turn at a slow speed
-        self.dc_motor_right_object.speed_low()
-        self.dc_motor_right_object.forward(seconds)        
+        # seconds = 1
+        print("Turn Right 45 degree")
+        # ##We should turn at a slow speed
+        # self.dc_motor_right_object.speed_low()
+        # self.dc_motor_right_object.forward(seconds)   
+        self.dc_motor_left_object.set_pin_disable()        
+        #self.dc_motor_left_object.set_forward_pin()
+        self.dc_motor_right_object.set_forward_pin()        
+        #self.dc_motor_left_object.set_pin_enable()
+        self.dc_motor_right_object.set_pin_enable()
+        self.dc_motor_left_object.set_pin_disable()  
+        time.sleep(1)        
+        #self.dc_motor_left_object.set_pin_disable()
+        self.dc_motor_right_object.set_pin_disable()  
         
     def steer_0_degree_right(self):
         seconds = 2
@@ -127,10 +139,9 @@ class AutoBot:
         self.dc_motor_right_object.set_forward_pin()        
         self.dc_motor_left_object.set_pin_enable()
         self.dc_motor_right_object.set_pin_enable()
-        time.sleep(1)        
+        time.sleep(10)        
         self.dc_motor_left_object.set_pin_disable()
-        self.dc_motor_right_object.set_pin_disable()
-        
+        self.dc_motor_right_object.set_pin_disable()      
 
         
     def reverse_1_second(self):
@@ -140,7 +151,7 @@ class AutoBot:
         self.dc_motor_right_object.set_reverse_pin()        
         self.dc_motor_left_object.set_pin_enable()
         self.dc_motor_right_object.set_pin_enable()
-        time.sleep(1)        
+        time.sleep(10)        
         self.dc_motor_left_object.set_pin_disable()
         self.dc_motor_right_object.set_pin_disable()    
         

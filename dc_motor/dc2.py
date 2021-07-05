@@ -3,10 +3,10 @@ from time import sleep
 
 in1 = 33
 in2 = 35
-en = 37
+en = 37 
 temp1=1
 
-GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BOARD)
 GPIO.setup(in1,GPIO.OUT)
 GPIO.setup(in2,GPIO.OUT)
 GPIO.setup(en,GPIO.OUT)

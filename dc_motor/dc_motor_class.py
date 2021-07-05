@@ -11,7 +11,7 @@ class DC_Motor:
     GPIO.setup(self.pin2, GPIO.OUT)
     GPIO.setup(self.pin_enable, GPIO.OUT)
     self.pwm=GPIO.PWM(self.pin_enable, 100)
-    self.pwm.start(0)
+    self.pwm.start(100)
     
   def speed_low(self):
     self.pwm=GPIO.PWM(self.pin_enable, 25)
