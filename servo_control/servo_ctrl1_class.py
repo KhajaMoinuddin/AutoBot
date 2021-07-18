@@ -40,7 +40,7 @@ class Servo:
         time.sleep(0.7)
         self.duty = self.duty + 1
 
-  def tun_back_90_degree(self):
+  def turn_back_90_degree(self):
     # Wait for couple of seconds
     #time.sleep(2)
 
@@ -109,9 +109,9 @@ class Servo:
 
 
 if __name__ =="__main__":
-  servo = Servo(7)
+  servo = Servo(8)
   servo.move_servo_10_step()
-  servo.tun_back_90_degree()
+  servo.turn_back_90_degree()
   servo.turn_back_to_zero_degree()
   del servo
 

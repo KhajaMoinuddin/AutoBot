@@ -1,9 +1,13 @@
 import RPi.GPIO as GPIO          
 from time import sleep
 
-in1 = 33
-in2 = 35
-en = 37 
+# in1 = 33
+# in2 = 35
+# en = 37 
+
+in1 = 36
+in2 = 38
+en = 40
 temp1=1
 
 GPIO.setmode(GPIO.BOARD)

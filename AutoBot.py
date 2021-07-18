@@ -1,5 +1,6 @@
 import sys
 import time
+import RPi.GPIO as GPIO
 # insert at 1, 0 is the script path (or '' in REPL)
 sys.path.insert(1, '/home/pi/AutoBot/servo_control')
 sys.path.insert(1, '/home/pi/AutoBot/ultrasonic')
@@ -32,21 +33,23 @@ class AutoBot:
     
     def automatic(self):
         print("Automatic Mode")
-	#self.servo_object.tun_back_90_degree()
-        self.servo_object.turn_back_to_zero_degree()      
+        #self.servo_object.tun_back_90_degree()
+        #self.servo_object.turn_back_to_zero_degree()      
         # self.servo_object.move_servo_10_step()
         # self.servo_object.turn_back_to_zero_degree()
+        self.servo_object.turn_back_90_degree()
         d_zero = self.ultrasonic_sensor_object.get_distance()
         print("Duistance at zero Degree:",d_zero,"Cm")
 
         try: 
             #Infine Loop
             while(True):
-                self.servo_object.tun_back_90_degree()
+                self.servo_object.turn_back_90_degree()
                 d_ninty = self.ultrasonic_sensor_object.get_distance()
                 print("Duistance at zero Degree:",d_ninty,"Cm")
-                if(d_ninty>30):
+                if(d_ninty>50):
                     print("DC Motor Move Forward")
+                    self.forward_1_second()
                     d_ninty = self.ultrasonic_sensor_object.get_distance()
                 else:
                     ##180 Degree is Left 
@@ -54,33 +57,41 @@ class AutoBot:
                     self.servo_object.turn_back_to_Forty_Five_degree()
                     d = self.ultrasonic_sensor_object.get_distance()
                     print("Duistance at 45 Degree:",d,"Cm")
-                    if(d >30):
+                    
+                    if(d >50):
                         print("DC Motor Turn Right 45 Degree")
+                        self.steer_45_degree_right()
                     else:
                         self.servo_object.turn_back_to_zero_degree()
                         d = self.ultrasonic_sensor_object.get_distance()
                         print("Duistance at 0 Degree:",d,"Cm")
-                        if (d > 30):
+                        if (d > 50):
                             print("DC Motor Turn Hard Right 0 Degree")
+                            self.steer_0_degree_right()
                         else:
                             self.servo_object.turn_back_to_135_degree()
                             d = self.ultrasonic_sensor_object.get_distance()
                             print("Duistance at 135 Degree:",d,"Cm")
-                            if (d > 30):
-                                print("DC Motor Turn left 135 Degree")                       
+                            if (d > 50):
+                                print("DC Motor Turn left 135 Degree")  
+                                self.steer_135_degree_left()
                             else:
                                 self.servo_object.turn_back_to_180_degree()
                                 d = self.ultrasonic_sensor_object.get_distance()
                                 print("Duistance at 180 Degree:",d,"Cm")
-                                if (d > 30):
+                                if (d > 50):
                                     print("DC Motor Turn Hard Left 180 Degree")    
                                 else:
                                     ###Trake a U turn
-                                    print("DC Motor Turn 180 Degree ")                                        
+                                    print("DC Motor Turn 180 Degree ")
+                                    self.steer_270_degree_left()
                         
         except KeyboardInterrupt:
-             print("Ending Autonomus Mode")       
+            print("Ending Autonomus Mode")
+            self.servo_object.turn_back_to_zero_degree()
+            GPIO.cleanup()
         self.servo_object.turn_back_to_zero_degree()
+        
 	#try:
             #while(1):
                 
@@ -90,11 +101,13 @@ class AutoBot:
         
     def start(self):
         print("Starting with Automatic mode, By Default")
-        #self.automatic()
-        #self.manual()
-        self.forward_1_second()
-        self.reverse_1_second()
-        self.steer_45_degree_right()
+        self.automatic()
+        
+        #self.forward_1_second()        
+        self.reverse_1_second()        
+        #self.steer_45_degree_right()  
+        #self.steer_0_degree_right()  
+        self.steer_270_degree_left()
         
     def stop(self):
         print("Stopping Autobot")
@@ -106,30 +119,84 @@ class AutoBot:
         # ##We should turn at a slow speed
         # self.dc_motor_right_object.speed_low()
         # self.dc_motor_right_object.forward(seconds)   
-        self.dc_motor_left_object.set_pin_disable()        
-        #self.dc_motor_left_object.set_forward_pin()
-        self.dc_motor_right_object.set_forward_pin()        
-        #self.dc_motor_left_object.set_pin_enable()
+        #self.dc_motor_left_object.set_pin_disable()        
+        self.dc_motor_left_object.set_reverse_pin()
+        self.dc_motor_right_object.set_forward_pin() 
+        
+        self.dc_motor_left_object.set_pin_enable()
         self.dc_motor_right_object.set_pin_enable()
-        self.dc_motor_left_object.set_pin_disable()  
-        time.sleep(1)        
-        #self.dc_motor_left_object.set_pin_disable()
+        #self.dc_motor_left_object.set_pin_disable()  
+        time.sleep(0.5)        
+        self.dc_motor_left_object.set_pin_disable()
         self.dc_motor_right_object.set_pin_disable()  
         
     def steer_0_degree_right(self):
-        seconds = 2
-        self.dc_motor_right_object.speed_low()
-        self.dc_motor_right_object.forward(seconds)
+      # seconds = 1
+        print("Turn Right 0 degree")
+        # ##We should turn at a slow speed
+        # self.dc_motor_right_object.speed_low()
+        # self.dc_motor_right_object.forward(seconds)   
+        #self.dc_motor_left_object.set_pin_disable()        
+        self.dc_motor_left_object.set_reverse_pin()
+        self.dc_motor_right_object.set_forward_pin() 
+        
+        self.dc_motor_left_object.set_pin_enable()
+        self.dc_motor_right_object.set_pin_enable()
+        #self.dc_motor_left_object.set_pin_disable()  
+        time.sleep(1)        
+        self.dc_motor_left_object.set_pin_disable()
+        self.dc_motor_right_object.set_pin_disable()  
     
     def steer_135_degree_left(self):
-        seconds = 1
-        self.dc_motor_left_object.speed_low()
-        self.dc_motor_left_object.forward(seconds)
+        # seconds = 1
+        print("Turn left 135 degree")
+        # ##We should turn at a slow speed
+        # self.dc_motor_right_object.speed_low()
+        # self.dc_motor_right_object.forward(seconds)   
+        #self.dc_motor_left_object.set_pin_disable()        
+        self.dc_motor_left_object.set_forward_pin()
+        self.dc_motor_right_object.set_reverse_pin() 
+        
+        self.dc_motor_left_object.set_pin_enable()
+        self.dc_motor_right_object.set_pin_enable()
+        #self.dc_motor_left_object.set_pin_disable()  
+        time.sleep(0.5)        
+        self.dc_motor_left_object.set_pin_disable()
+        self.dc_motor_right_object.set_pin_disable()  
         
     def steer_180_degree_left(self):
-        seconds = 2
-        self.dc_motor_left_object.speed_low()
-        self.dc_motor_left_object.forward(seconds)
+        # seconds = 1
+        print("Turn left 135 degree")
+        # ##We should turn at a slow speed
+        # self.dc_motor_right_object.speed_low()
+        # self.dc_motor_right_object.forward(seconds)   
+        #self.dc_motor_left_object.set_pin_disable()        
+        self.dc_motor_left_object.set_forward_pin()
+        self.dc_motor_right_object.set_reverse_pin() 
+        
+        self.dc_motor_left_object.set_pin_enable()
+        self.dc_motor_right_object.set_pin_enable()
+        #self.dc_motor_left_object.set_pin_disable()  
+        time.sleep(1)        
+        self.dc_motor_left_object.set_pin_disable()
+        self.dc_motor_right_object.set_pin_disable()  
+        
+    def steer_270_degree_left(self):
+        # seconds = 1
+        print("Turn left 135 degree")
+        # ##We should turn at a slow speed
+        # self.dc_motor_right_object.speed_low()
+        # self.dc_motor_right_object.forward(seconds)   
+        #self.dc_motor_left_object.set_pin_disable()        
+        self.dc_motor_left_object.set_forward_pin()
+        self.dc_motor_right_object.set_reverse_pin() 
+        
+        self.dc_motor_left_object.set_pin_enable()
+        self.dc_motor_right_object.set_pin_enable()
+        #self.dc_motor_left_object.set_pin_disable()  
+        time.sleep(1.5)        
+        self.dc_motor_left_object.set_pin_disable()
+        self.dc_motor_right_object.set_pin_disable()  
     
     def forward_1_second(self):
         print("Forward one second")
@@ -139,7 +206,7 @@ class AutoBot:
         self.dc_motor_right_object.set_forward_pin()        
         self.dc_motor_left_object.set_pin_enable()
         self.dc_motor_right_object.set_pin_enable()
-        time.sleep(10)        
+        time.sleep(1)        
         self.dc_motor_left_object.set_pin_disable()
         self.dc_motor_right_object.set_pin_disable()      
 
@@ -151,7 +218,7 @@ class AutoBot:
         self.dc_motor_right_object.set_reverse_pin()        
         self.dc_motor_left_object.set_pin_enable()
         self.dc_motor_right_object.set_pin_enable()
-        time.sleep(10)        
+        time.sleep(1)        
         self.dc_motor_left_object.set_pin_disable()
         self.dc_motor_right_object.set_pin_disable()    
         
